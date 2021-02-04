@@ -17,24 +17,46 @@
 		/*CRUD -> C ->CREATE */
 
 		//insert record in the database table user
-		function createUser($username, $email, $pass, $mobile)
+		function createUser($username, $useremail, $pass, $usermobile)
 		{
-			$password = md5($pass);
+			if($this->isUserExist($useremail,$usermobile))
+			{
+				return 0;
+			}
+			else
+			{
+				$userpassword = md5($pass);
 
-			//create a statement
-			$stmt = $this->con->prepare("INSERT INTO `vm_users` (`u_id`, `u_name`, `u_email`, `u_password`, `u_mobile`) VALUES (NULL, ?, ?, ?, ?)");
+				//create a statement
+				$stmt = $this->con->prepare("INSERT INTO `vm_users` (`u_id`, `u_name`, `u_email`, `u_password`, `u_mobile`) VALUES (NULL, ?, ?, ?, ?)");
+				$stmt->bind_Param("ssss",$username,$useremail,$userpassword,$usermobile);
 
-
-			//now we will bind the actual perameters that is needed for the quries
-			//and we can use it, we can bind the paremeters using the bind param method 
-			//bind the parameter to the sql quary
-			$stmt->bind_Param("ssss",$username,$email,$password,$mobile);
-
-			if($stmt->execute()){
-				return true;
-			}else{
-				return false;
+				if($stmt->execute())
+				{
+					return 1;
+				}
+				else
+				{
+					echo $this->con->error;
+					return 2;
+				}
 			}
 
 		}
+		public function isUserExist($useremail,$usermobile)
+		{
+			$stmt = $this->con->prepare("SELECT u_id from vm_users WHERE u_email = ? or u_mobile = ?");
+			$stmt->bind_Param("ss",$useremail,$usermobile);
+			$stmt->store_result();
+			return $stmt->num_rows > 0;
+		}
+		public function getUserByUserEmail($useremail)
+		{
+
+			$stmt = $this->con->prepare("SELECT * FROM vm_users WHERE u_email = ?");
+			$stmt->bind_param("s",$useremail);
+			$stmt->execute();
+			return $stmt->get_result()->fetch_assoc();
+		}
+
 	}
