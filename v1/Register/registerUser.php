@@ -1,6 +1,6 @@
 <?php
 
-require_once '../includes/DbOperations.php';
+require_once '../../Includes/DbOperations.php';
 $response = array(); 
 if($_SERVER['REQUEST_METHOD'] == 'POST')
 {

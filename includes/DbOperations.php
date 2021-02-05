@@ -3,13 +3,13 @@
 	class DbOperation{
 
 		private $con;
+		private $response;
+		private $responseData;
 
 		function __construct()
 		{
 			 require_once dirname(__File__).'/DbConnect.php';
-
 			 $db = new DbConnect(); 
-
 			 $this->con = $db->connect();
 		}
 
@@ -17,7 +17,7 @@
 		/*CRUD -> C ->CREATE */
 
 		//insert record in the database table user
-		function createUser($username, $useremail, $pass, $usermobile)
+		function createUser($username, $useremail, $userpassword, $usermobile)
 		{
 			if($this->isUserExist($useremail,$usermobile))
 			{
@@ -25,9 +25,6 @@
 			}
 			else
 			{
-				$userpassword = md5($pass);
-
-				//create a statement
 				$stmt = $this->con->prepare("INSERT INTO `vm_users` (`u_id`, `u_name`, `u_email`, `u_password`, `u_mobile`) VALUES (NULL, ?, ?, ?, ?)");
 				$stmt->bind_Param("ssss",$username,$useremail,$userpassword,$usermobile);
 
@@ -41,7 +38,6 @@
 					return 2;
 				}
 			}
-
 		}
 		public function isUserExist($useremail,$usermobile)
 		{
@@ -49,7 +45,7 @@
 			$stmt->bind_Param("ss",$useremail,$usermobile);
 			$stmt->execute();
 			$stmt->store_result();
-			echo $stmt->num_rows;
+			//echo $stmt->num_rows;
 			return $stmt->num_rows > 0;
 		}
 		public function getUserByUserEmail($useremail)
@@ -59,6 +55,35 @@
 			$stmt->bind_param("s",$useremail);
 			$stmt->execute();
 			return $stmt->get_result()->fetch_assoc();
+		}
+		public function userLogin($email,$pass)
+		{
+			$response = array();
+			$responseData = array();
+			$stmt = $this->con->prepare("SELECT u_id from vm_users WHERE u_email = ? and u_password = ?");
+			$stmt->bind_param("ss",$email,$pass);
+			$stmt->execute();
+			$stmt->store_result();
+			if($stmt->num_rows>0)
+			{
+				$response["success"] = true;
+				$result = $this->con->query("SELECT * FROM vm_users WHERE u_email ='".$email."'");
+				$row = $result->fetch_assoc();
+				$responseData['userid'] = $row['u_id'];
+				$responseData['username'] = $row['u_name'];
+				$responseData['useremail'] = $row['u_email'];
+				$responseData['usermobile'] = $row['u_mobile'];
+				
+
+				$response['Data'] = $responseData;
+				return $response;
+			}
+			else
+			{
+				$response['success'] = false;
+				$response['message'] = "Either Email or password is Incorrect!";
+				return $response;
+			}
 		}
 
 	}

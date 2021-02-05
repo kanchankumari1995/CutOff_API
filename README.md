@@ -6,13 +6,31 @@ API of internship cutoff project
 
  1. to register user following is url and parameters.<br><br>
  <b>url</b><br>
- localhost/CutOff_api/v1/registerUser.php<br>       
+ localhost/CutOff_api/v1/Register/registerUser.php<br>       
  <b>param</b><br>
         {<br>
 	"username":"Kanchan Kumari",<br>
 	"useremail":"kanchankumawat@gmail.com",<br>
 	"userpassword": "12345678"<br>
         "usermobile": "7727054815"<br>
+        }<br><br>
+  <b>response</b><br>
+        {<br>
+         "success": true,<br>
+          "Data": {<br>
+                 "userid": 1349,<br>
+                 "username": "Kanchan Kumari",<br>
+                 "useremail": "kanchankumawat@gmail.com",<br>
+                 "usermobile": "7727054815"<br>
+                  }<br>
+         }
+2. to login user following is url and parameters.<br><br>
+ <b>url</b><br>
+ localhost/CutOff_api/v1/Login/fetch_Result.php<br>       
+ <b>param</b><br>
+        {<br>
+  "useremail":"kanchankumawat@gmail.com",<br>
+  "userpassword": "12345678"<br>
         }<br><br>
   <b>response</b><br>
         {<br>
