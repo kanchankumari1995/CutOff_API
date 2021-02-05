@@ -47,7 +47,9 @@
 		{
 			$stmt = $this->con->prepare("SELECT u_id from vm_users WHERE u_email = ? or u_mobile = ?");
 			$stmt->bind_Param("ss",$useremail,$usermobile);
+			$stmt->execute();
 			$stmt->store_result();
+			echo $stmt->num_rows;
 			return $stmt->num_rows > 0;
 		}
 		public function getUserByUserEmail($useremail)
