@@ -45,8 +45,10 @@
 			$stmt->bind_Param("ss",$useremail,$usermobile);
 			$stmt->execute();
 			$stmt->store_result();
+			echo 'hello';
 			//echo $stmt->num_rows;
 			return $stmt->num_rows > 0;
+
 		}
 		public function getUserByUserEmail($useremail)
 		{
@@ -84,6 +86,27 @@
 				$response['message'] = "Either Email or password is Incorrect!";
 				return $response;
 			}
+		}
+
+		public function FetchCourse()
+		{
+			$response = array();
+			$stmt = $this->con->prepare("SELECT * from `course`");
+			$stmt->execute();
+			$stmt->bind_result($courseId,$courseName,$courseOrder,$courseIcon,$courseURL);
+			$Services = array();
+			while($stmt->fetch()){
+				$temp = array();
+				$temp['courseId'] = $courseId;
+				$temp['courseName'] = $courseName;
+				$temp['courseOrder'] = $courseOrder;
+				$temp['courseIcon'] = $courseIcon;
+				$temp['courseURL'] = $courseURL;
+				array_Push($Services,$temp);	
+			}
+			$response['success'] = true;
+			$response['Data'] = $Services;
+			return json_encode($response);
 		}
 
 	}
