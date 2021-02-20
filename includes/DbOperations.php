@@ -104,8 +104,8 @@
 				$temp['courseURL'] = $courseURL;
 				array_Push($Services,$temp);	
 			}
-			$response['success'] = true;
-			$response['Data'] = $Services;
+			
+			$response = $Services;
 			return json_encode($response);
 		}
 
